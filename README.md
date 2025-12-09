@@ -20,4 +20,12 @@ Le projet combine ainsi des méthodes statistiques, des algorithmes de Machine L
 
 Ce projet représente une opportunité concrète de **moderniser la gestion du risque dans les OPCVM** en intégrant l’analyse avancée de données et la prévision des risques financiers, tout en améliorant la prise de décision et la transparence pour les investisseurs.
 
+## **Quelques définitions**
+
+- **Risque de marché**: le risque de marché correspond à la **perte potentielle due aux variations des prix des actifs financiers** dans le portefeuille, comme les actions, obligations ou devises. C’est le risque lié aux **mouvements généraux** du marché.
+- **Risque de liquidité**: Le risque de liquidité correspond à la **difficulté de vendre un actif rapidement sans affecter son prix.** Il devient critique si l’OPCVM doit rembourser des investisseurs mais que certains actifs ne peuvent pas être liquidés facilement.
+- **Risque de volatilité**: Le risque de volatilité correspond à la **grande variation des prix d’un actif ou d’un portefeuille sur une période donnée.** Une forte volatilité augmente l’incertitude sur le rendement futur.
+- **VaR – Value at Risk**: La VaR mesure la **perte maximale qu’un portefeuille pourrait subir sur une période donnée, avec un certain niveau de confiance.**
+- **CVaR – Conditional Value at Risk**: Le CVaR complète la VaR. Il mesure la **perte moyenne dans le pire X % des cas.**
+- **Volatilité**: La volatilité mesure la **dispersion des rendements autour de leur moyenne.** Plus la volatilité est élevée → plus le portefeuille est risqué.
 
