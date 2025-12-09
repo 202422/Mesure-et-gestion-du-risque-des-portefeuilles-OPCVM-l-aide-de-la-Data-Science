@@ -1,4 +1,4 @@
-# Mesure et gestion du risque des portefeuilles OPCVM à l’aide de la Data Science**
+# Mesure et gestion du risque des portefeuilles OPCVM à l’aide de la Data Science
 
 
 ## **Description du projet**
