@@ -29,3 +29,152 @@ Ce projet représente une opportunité concrète de **moderniser la gestion du r
 - **CVaR – Conditional Value at Risk**: Le CVaR complète la VaR. Il mesure la **perte moyenne dans le pire X % des cas.**
 - **Volatilité**: La volatilité mesure la **dispersion des rendements autour de leur moyenne.** Plus la volatilité est élevée → plus le portefeuille est risqué.
 
+
+## Passages importants
+
+*Bien que les rendements soient observés quotidiennement, la volatilité est une variable latente estimée à une fréquence journalière à partir des rendements passés, reflétant l’incertitude associée aux variations futures des prix.*   
+
+*La Value at Risk (VaR) mesure la perte maximale attendue à un niveau de confiance donné, tandis que la Conditional Value at Risk (CVaR) évalue la perte moyenne conditionnelle aux pires scénarios. La combinaison des deux indicateurs permet une évaluation plus complète du risque de portefeuille, en particulier dans les périodes de stress.*    
+
+*Les modèles GARCH et EGARCH sont utilisés pour estimer la volatilité conditionnelle des rendements financiers. Tandis que GARCH capture la persistance de la volatilité, EGARCH permet de modéliser l’asymétrie des chocs de marché, les pertes ayant un impact plus important que les gains sur la volatilité future.*   
+
+*Une approche hybride combinant les modèles classiques GARCH/EGARCH avec des modèles de Machine Learning permet d’estimer de manière plus précise la volatilité et le risque d’un portefeuille. Les modèles classiques capturent la persistance et la dynamique historique des rendements, tandis que les modèles ML corrigent les limites de structure et capturent les relations complexes non-linéaires, conduisant à des mesures de risque (VaR et CVaR) plus fiables.*
+
+*Dans l’approche hybride A, la volatilité estimée par GARCH/EGARCH est utilisée comme feature principale dans un modèle de Machine Learning ou Deep Learning. Le modèle apprend à prédire la volatilité future, qui est ensuite utilisée pour calculer des mesures de risque telles que la VaR et la CVaR, combinant ainsi la robustesse des modèles classiques et la flexibilité du ML.*   
+
+*Pour l’étude empirique, nous sélectionnons l’OPCVM Attijari Diversifié géré par Wafa Gestion, un fonds multi‑actifs représentatif de la classe diversifiée au Maroc. Ce fonds sera analysé en termes de volatilité, de risques extrêmes (VaR/CVaR) et de dépendances temporelles entre ses composantes, à l’aide de méthodes classiques (GARCH/EGARCH) et modernes (Machine Learning).*
+
+
+## Axes scientifiques clés du projet
+
+Ton projet repose sur **4 piliers techniques majeurs** :
+
+### 🔹 Axe 1 : Mesure et prévision de la volatilité
+
+> *“À quel point le portefeuille est instable aujourd’hui et demain ?”*
+
+* Méthodes classiques :
+
+  * Volatilité historique
+  * GARCH / EGARCH
+* Méthodes ML / DL :
+
+  * LSTM (séries temporelles financières)
+  * Transformers (attention sur long terme)
+  * Random Forest / XGBoost (features techniques)
+
+🎯 **Sorties attendues** :
+
+* Volatilité prédite
+* VaR / CVaR dynamiques
+* Comparaison classique vs ML
+
+---
+
+### 🔹 Axe 2 : Corrélations dynamiques entre actifs
+
+> *“Quels actifs deviennent dangereux ensemble dans certaines conditions ?”*
+
+* Problème clé :
+
+  * Les corrélations **ne sont pas constantes**
+* Méthodes possibles :
+
+  * Rolling correlation
+  * DCC-GARCH
+  * PCA dynamique
+  * Graphes de corrélation (network analysis)
+
+🎯 **Sorties attendues** :
+
+* Heatmaps temporelles
+* Graphes de dépendance
+* Détection des risques de concentration
+
+---
+
+### 🔹 Axe 3 : Stress testing et scénarios extrêmes
+
+> *“Que se passe-t-il si le marché s’effondre ?”*
+
+* Techniques :
+
+  * Monte Carlo simulation
+  * Scénarios historiques (crise 2008, Covid, etc.)
+  * Modèles génératifs (optionnel, bonus)
+* Analyse :
+
+  * pertes extrêmes
+  * VaR conditionnelle
+  * drawdown maximal
+
+🎯 **Sorties attendues** :
+
+* Rapports de stress tests
+* Distributions de pertes
+* Comparaison normal vs stressé
+
+---
+
+### 🔹 Axe 4 : Visualisation & dashboard
+
+> *“Comment rendre le risque lisible pour un gestionnaire ?”*
+
+* Tableaux de bord interactifs :
+
+  * évolution de la VaR
+  * volatilité prédite
+  * corrélations
+* Outils :
+
+  * Streamlit / Dash / Power BI
+
+🎯 **Sorties attendues** :
+
+* Dashboard temps réel (ou quasi)
+* Visualisations claires pour décision
+
+---
+
+## Architecture globale du projet
+
+Voici une **architecture logique** (très appréciée par les jurys 👇)
+
+```
+Données financières (Prix journaliers / VL du fonds)
+        ↓
+Calcul des rendements journaliers
+        ↓
+Prétraitement & Feature Engineering
+        - Rendements passés
+        - Volatilité GARCH / EGARCH
+        - Indicateurs macro (optionnel)
+        ↓
+┌────────────────────────────┐
+│  Modèles de volatilité     │
+│  - GARCH / EGARCH          │
+│  - ML / DL (LSTM, XGBoost,│
+│    Transformers)           │
+│    avec features incluant  │
+│    vol GARCH               │
+└────────────────────────────┘
+        ↓
+┌────────────────────────────┐
+│  Mesures de risque         │
+│  - VaR / CVaR              │
+│  - Volatilité prédite      │
+└────────────────────────────┘
+        ↓
+┌────────────────────────────┐
+│ Corrélations dynamiques    │
+│ & Stress Testing           │
+│ - Corrélations entre actifs│
+│ - Scénarios de marché      │
+└────────────────────────────┘
+        ↓
+Dashboard & Reporting
+
+```
+
+
+
