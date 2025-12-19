@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from tqdm import tqdm
 from requests.exceptions import RequestException
+import re
+from urllib.parse import unquote
+
 
 
 # =======================
@@ -103,7 +106,7 @@ def extract_pdf_links(soup):
             pdf_links.append(urljoin(BASE_URL, href))
     return list(set(pdf_links))
 
-
+"""
 def download_pdf(url, downloaded_files):
     filename = url.split("/")[-1]
     filepath = os.path.join(DOWNLOAD_DIR, filename)
@@ -117,10 +120,58 @@ def download_pdf(url, downloaded_files):
             for chunk in r.iter_content(chunk_size=8192):
                 if chunk:
                     f.write(chunk)
+                    
 
     save_downloaded_file(filename, url)
     downloaded_files.add(filename)
     return True
+"""
+
+def extract_date_from_filename(url):
+    """
+    Extrait une date depuis le nom du fichier et la normalise en DD-MM-YYYY
+    """
+    filename = unquote(url.split("/")[-1]).lower()
+
+    # Formats possibles :
+    patterns = [
+        r'(\d{2})[_\-](\d{2})[_\-](\d{4})',   # 12_02_2021 ou 12-02-2021
+        r'(\d{2})(\d{2})(\d{4})'             # 08012021
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, filename)
+        if match:
+            day, month, year = match.groups()
+            return f"{day}-{month}-{year}.pdf"
+
+    return None
+
+
+def download_pdf(url, downloaded_files):
+    # Extraire une date propre
+    new_filename = extract_date_from_filename(url)
+
+    if not new_filename:
+        print(f"⚠️ Date non reconnue dans l'URL : {url}")
+        return False
+
+    filepath = os.path.join(DOWNLOAD_DIR, new_filename)
+
+    if new_filename in downloaded_files:
+        return False
+
+    with session.get(url, stream=True, timeout=REQUEST_TIMEOUT) as r:
+        r.raise_for_status()
+        with open(filepath, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    save_downloaded_file(new_filename, url)
+    downloaded_files.add(new_filename)
+    return True
+
 
 
 def get_next_page(soup):
