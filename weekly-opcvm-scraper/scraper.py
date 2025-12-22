@@ -9,6 +9,7 @@ from tqdm import tqdm
 from requests.exceptions import RequestException
 import re
 from urllib.parse import unquote
+import pandas as pd
 
 
 
@@ -57,19 +58,28 @@ def load_downloaded_files():
 
 
 def save_downloaded_file(filename, url):
-    """Ajoute un fichier téléchargé au CSV"""
+    """Ajoute un fichier téléchargé au CSV avec colonne 'date' extraite du filename"""
     file_exists = os.path.exists(CSV_FILE)
+
+    # Extraire la date du filename
+    try:
+        file_date_str = filename.replace(".pdf", "")  # "31-12-2022"
+        file_date = datetime.strptime(file_date_str, "%d-%m-%Y").date()
+    except ValueError:
+        print(f"⚠️ Impossible de convertir la date du fichier : {filename}")
+        file_date = ""
 
     with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
         if not file_exists:
-            writer.writerow(["filename", "url", "download_date"])
+            writer.writerow(["filename", "url", "download_date", "date"])
 
         writer.writerow([
             filename,
             url,
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  # download_date
+            file_date.strftime("%Y-%m-%d") if file_date else ""  # date column
         ])
 
 # =======================
@@ -148,6 +158,19 @@ def extract_date_from_filename(url):
     return None
 
 
+# Load already downloaded files CSV
+downloaded_df = pd.read_csv("downloaded_files.csv")  # columns: filename,url,download_date,date
+
+# Convert the 'date' column to datetime
+downloaded_df['date'] = pd.to_datetime(downloaded_df['date'], format='%Y-%m-%d')
+
+
+# Find the most recent downloaded file date
+if not downloaded_df.empty:
+    most_recent_date = downloaded_df['date'].max()
+else:
+    most_recent_date = None
+
 def download_pdf(url, downloaded_files):
     # Extraire une date propre
     new_filename = extract_date_from_filename(url)
@@ -156,10 +179,24 @@ def download_pdf(url, downloaded_files):
         print(f"⚠️ Date non reconnue dans l'URL : {url}")
         return False
 
-    filepath = os.path.join(DOWNLOAD_DIR, new_filename)
+    # Extract date from filename
+    file_date_str = new_filename.replace(".pdf", "")
+    try:
+        file_date = datetime.strptime(file_date_str, "%d-%m-%Y")
+    except ValueError:
+        print(f"⚠️ Impossible de convertir la date du fichier : {new_filename}")
+        return False
 
+    # Skip if file already downloaded in memory
     if new_filename in downloaded_files:
         return False
+
+    # Skip if file date is not newer than most recent downloaded
+    if most_recent_date and file_date <= most_recent_date:
+        print(f"⏹️ Reached already downloaded file: {new_filename}, skipping.")
+        return False
+
+    filepath = os.path.join(DOWNLOAD_DIR, new_filename)
 
     with session.get(url, stream=True, timeout=REQUEST_TIMEOUT) as r:
         r.raise_for_status()
@@ -170,6 +207,7 @@ def download_pdf(url, downloaded_files):
 
     save_downloaded_file(new_filename, url)
     downloaded_files.add(new_filename)
+    print(f"✅ Downloaded {new_filename}")
     return True
 
 
