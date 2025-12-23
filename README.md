@@ -84,6 +84,8 @@ Ce projet représente une opportunité concrète de **moderniser la gestion du r
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+## **Résultats**
+
 **Résultats approche ML**
 
 ![](assets/XGBoost.png)
