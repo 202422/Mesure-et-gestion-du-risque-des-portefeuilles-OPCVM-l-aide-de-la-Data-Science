@@ -1,4 +1,69 @@
+# HTTP & Web Scraping
 requests>=2.31.0
 beautifulsoup4>=4.12.3
-tqdm>=4.66.1
+soupsieve>=2.8.1
 lxml>=5.1.0
+pdfminer.six>=20251107
+pdfplumber>=0.11.8
+selenium>=4.39.0
+playwright>=1.57.0
+webdriver-manager>=4.0.2
+pypdfium2>=5.2.0
+
+# Data processing & scientific stack
+numpy>=2.3.5
+pandas>=2.3.3
+scipy>=1.16.3
+scikit-learn>=1.8.0
+statsmodels>=0.14.6
+xgboost>=3.1.2
+arch>=8.0.0
+joblib>=1.5.3
+patsy>=1.0.2
+matplotlib>=3.10.8
+seaborn>=0.13.2
+openpyxl>=3.1.5
+et_xmlfile>=2.0.0
+
+# Utility & system
+python-dotenv>=1.2.1
+tqdm>=4.66.1
+python-dateutil>=2.9.0.post0
+pytz>=2025.2
+tzdata>=2025.3
+certifi>=2025.11.12
+charset-normalizer>=3.4.4
+idna>=3.11
+urllib3>=2.6.2
+cffi>=2.0.0
+cryptography>=46.0.3
+six>=1.17.0
+typing_extensions>=4.15.0
+
+# FastAPI / Server
+fastapi>=0.105.0
+uvicorn>=0.26.1
+starlette>=0.31.0
+pydantic>=2.6.1
+
+# Jupyter / Dev tools (optionnel si tu utilises des notebooks)
+ipython>=9.8.0
+ipykernel>=7.1.0
+jupyter_client>=8.7.0
+jupyter_core>=5.9.1
+decorator>=5.2.1
+traitlets>=5.14.3
+nest-asyncio>=1.6.0
+stack-data>=0.6.3
+asttokens>=3.0.1
+pure_eval>=0.2.3
+parso>=0.8.5
+prompt_toolkit>=3.0.52
+pygments>=2.19.2
+
+# Visualization
+cycler>=0.12.1
+kiwisolver>=1.4.9
+fonttools>=4.61.1
+contourpy>=1.3.3
+colorama>=0.4.6

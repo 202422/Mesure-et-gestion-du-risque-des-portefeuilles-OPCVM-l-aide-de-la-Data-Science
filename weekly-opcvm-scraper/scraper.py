@@ -17,12 +17,18 @@ import pandas as pd
 # CONFIGURATION
 # =======================
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+
 BASE_URL = "https://www.wafagestion.com"
 START_PATH = "/fr/rapports-et-analyses/Weekly-OPCVM"
 START_URL = urljoin(BASE_URL, START_PATH)
 
-DOWNLOAD_DIR = "data/weekly_opcvm"
-CSV_FILE = "downloaded_files.csv"
+DOWNLOAD_DIR = os.path.join(BASE_DIR, "data", "weekly_opcvm")
+CSV_FILE = os.path.join(BASE_DIR, "downloaded_files.csv")
+NEW_CSV_FILE = os.path.join(BASE_DIR, "new_data.csv")
+
 
 REQUEST_TIMEOUT = 15
 SLEEP_BETWEEN_REQUESTS = 1
@@ -57,21 +63,57 @@ def load_downloaded_files():
     return downloaded
 
 
-def save_downloaded_file(filename, url):
-    """Ajoute un fichier téléchargé au CSV avec colonne 'date' extraite du filename"""
-    file_exists = os.path.exists(CSV_FILE)
 
+def save_downloaded_file(filename, url):
+    """Ajoute un fichier téléchargé au CSV en conservant un index correct"""
     # Extraire la date du filename
     try:
-        file_date_str = filename.replace(".pdf", "")  # "31-12-2022"
+        file_date_str = filename.replace(".pdf", "")
         file_date = datetime.strptime(file_date_str, "%d-%m-%Y").date()
     except ValueError:
         print(f"⚠️ Impossible de convertir la date du fichier : {filename}")
         file_date = ""
 
-    with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
+    # Créer un DataFrame temporaire
+    df_new = pd.DataFrame([{
+        "filename": filename,
+        "url": url,
+        "download_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "date": file_date.strftime("%Y-%m-%d") if file_date else ""
+    }])
+
+    # Si le CSV existe, concaténer ; sinon créer
+    if os.path.exists(CSV_FILE):
+        df_existing = pd.read_csv(CSV_FILE)
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+    else:
+        df_combined = df_new
+
+    # Sauvegarder en écrasant l'ancien CSV et sans créer de colonne index supplémentaire
+    df_combined.to_csv(CSV_FILE, index=False, encoding="utf-8-sig")
+
+
+
+def save_new_downloaded_file(filename, url):
+    """
+    Ajoute un fichier téléchargé au CSV new_data.csv
+    avec colonne 'date' extraite du filename
+    """
+
+    file_exists = os.path.exists(NEW_CSV_FILE)
+
+    # Extraire la date depuis le filename (ex: 31-12-2022.pdf)
+    try:
+        file_date_str = filename.replace(".pdf", "")
+        file_date = datetime.strptime(file_date_str, "%d-%m-%Y").date()
+    except ValueError:
+        print(f"⚠️ Impossible de convertir la date du fichier : {filename}")
+        file_date = ""
+
+    with open(NEW_CSV_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
+        # Écriture de l’en-tête si fichier inexistant
         if not file_exists:
             writer.writerow(["filename", "url", "download_date", "date"])
 
@@ -79,7 +121,7 @@ def save_downloaded_file(filename, url):
             filename,
             url,
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  # download_date
-            file_date.strftime("%Y-%m-%d") if file_date else ""  # date column
+            file_date.strftime("%Y-%m-%d") if file_date else ""
         ])
 
 # =======================
@@ -159,7 +201,7 @@ def extract_date_from_filename(url):
 
 
 # Load already downloaded files CSV
-downloaded_df = pd.read_csv("downloaded_files.csv")  # columns: filename,url,download_date,date
+downloaded_df = pd.read_csv(CSV_FILE)  # columns: filename,url,download_date,date
 
 # Convert the 'date' column to datetime
 downloaded_df['date'] = pd.to_datetime(downloaded_df['date'], format='%Y-%m-%d')
@@ -187,14 +229,17 @@ def download_pdf(url, downloaded_files):
         print(f"⚠️ Impossible de convertir la date du fichier : {new_filename}")
         return False
 
+    # Skip if file date is not newer than most recent downloaded
+    if most_recent_date and file_date <= most_recent_date:
+        print(f"⏹️ Reached already downloaded file: {new_filename}, skipping.")
+        return "stop"
+
+
     # Skip if file already downloaded in memory
     if new_filename in downloaded_files:
         return False
 
-    # Skip if file date is not newer than most recent downloaded
-    if most_recent_date and file_date <= most_recent_date:
-        print(f"⏹️ Reached already downloaded file: {new_filename}, skipping.")
-        return False
+    
 
     filepath = os.path.join(DOWNLOAD_DIR, new_filename)
 
@@ -206,6 +251,7 @@ def download_pdf(url, downloaded_files):
                     f.write(chunk)
 
     save_downloaded_file(new_filename, url)
+    save_new_downloaded_file(new_filename, url)
     downloaded_files.add(new_filename)
     print(f"✅ Downloaded {new_filename}")
     return True
@@ -225,9 +271,9 @@ def get_next_page(soup):
 
 def scrape_all_reports():
     downloaded_files = load_downloaded_files()
-
     page_number = 0
     new_files = 0
+    stop_scraping = False  # <-- nouveau drapeau
 
     while True:
         # Génère l'URL de la page
@@ -247,9 +293,20 @@ def scrape_all_reports():
         print(f"➡️  {len(pdf_links)} PDF trouvés")
 
         for pdf_url in tqdm(pdf_links, desc="Téléchargement"):
-            if download_pdf(pdf_url, downloaded_files):
+            result = download_pdf(pdf_url, downloaded_files)
+
+            if result == "stop":  # <-- PDF trop ancien détecté
+                stop_scraping = True
+                continue  # continuer la boucle for jusqu'au dernier PDF
+
+            elif result:
                 new_files += 1
+
             time.sleep(0.5)  # pause pour ne pas surcharger le serveur
+
+        if stop_scraping:
+            print("⏹️ PDF ancien détecté : arrêt après cette page.")
+            break  # arrêter le while, ne pas passer à la page suivante
 
         page_number += 1
         time.sleep(SLEEP_BETWEEN_REQUESTS)
