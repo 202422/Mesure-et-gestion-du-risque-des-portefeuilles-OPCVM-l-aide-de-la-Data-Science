@@ -86,9 +86,11 @@ Ce projet représente une opportunité concrète de **moderniser la gestion du r
 
 **Résultats approche ML**
 
+![](assets/XGBoost.png)
+
 **Résultats approche Traditionnel Garch**
 
-
+![](assets/GARCH.png)
 
 **Comparaison**
 
