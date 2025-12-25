@@ -9,12 +9,12 @@ import pandas as pd
 import numpy as np
 
 # Try to import XGBoost, fall back to RandomForest if unavailable to improve robustness
-try:
-    from xgboost import XGBRegressor
-    _HAS_XGBOOST = True
-except Exception:
-    _HAS_XGBOOST = False
-    from sklearn.ensemble import RandomForestRegressor
+#try:
+from xgboost import XGBRegressor
+_HAS_XGBOOST = True
+#except Exception:
+#   _HAS_XGBOOST = False
+#from sklearn.ensemble import RandomForestRegressor
 
 # ======================================================
 # BASE DIR (robuste quel que soit le point d'exécution)
@@ -56,17 +56,25 @@ def dynamic_forecast_with_retraining(df, model_params, target_col="vol_future_2w
     predictions = []
 
     for idx in unknown_idx:
-        if _HAS_XGBOOST:
-            model = XGBRegressor(
+        #if _HAS_XGBOOST:
+        #    model = XGBRegressor(
+        #       **model_params,
+        #        objective="reg:squarederror",
+        #        eval_metric="rmse",
+        #        random_state=42,
+        #        n_jobs=-1,
+        #    )
+        #else:
+            # Fallback to a lightweight RandomForest when XGBoost is not available
+        #    model = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)
+
+        model = XGBRegressor(
                 **model_params,
                 objective="reg:squarederror",
                 eval_metric="rmse",
                 random_state=42,
                 n_jobs=-1,
             )
-        else:
-            # Fallback to a lightweight RandomForest when XGBoost is not available
-            model = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)
 
         # Fit without verbose
         model.fit(X_train_dyn, y_train_dyn)
