@@ -46,7 +46,7 @@ export function FinancialDashboard() {
   setModelResult(null)
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL!
     const resp = await fetch(`${apiUrl}/api/volatility/run-modelling`, {
       method: "POST",
     })

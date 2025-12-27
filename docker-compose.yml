@@ -1,16 +1,29 @@
 version: "3.8"
 
 services:
-  frontend:
-    build: ./frontend
-    restart: always
 
   backend:
     build: ./backend
+    container_name: fastapi
     restart: always
+    expose:
+      - "8000"
+
+  frontend:
+    build: ./frontend
+    container_name: nextjs
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    expose:
+      - "3000"
 
   nginx:
     build: ./nginx
+    container_name: nginx
+    restart: always
     ports:
       - "80:80"
     depends_on:
