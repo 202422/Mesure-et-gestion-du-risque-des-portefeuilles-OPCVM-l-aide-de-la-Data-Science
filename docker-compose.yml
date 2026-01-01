@@ -8,6 +8,8 @@ services:
     restart: always
     expose:
       - "8000"
+    volumes:
+      - E:/MesProjets/backend/data:/app/data  # chemin absolu Windows vers le dossier data
 
   frontend:
     build: ./frontend
@@ -16,7 +18,7 @@ services:
     depends_on:
       - backend
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NEXT_PUBLIC_API_URL=http://localhost
     expose:
       - "3000"
 

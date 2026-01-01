@@ -189,7 +189,7 @@ export function aggregateToWeekly(data: Array<{ date: string; value: number }>) 
 export async function fetchOPCVMData(): Promise<Array<{ date: string; value: number }>> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-    const response = await fetch(`${apiUrl}/api/final/opcvm_liquidative`)
+    const response = await fetch(`/api/final/opcvm_liquidative`)
     if (!response.ok) throw new Error(`API error: ${response.status}`)
     const data = await response.json()
     // Convert ISO date strings to dd/mm format for consistency
@@ -208,7 +208,7 @@ export async function fetchOPCVMData(): Promise<Array<{ date: string; value: num
 export async function fetchMASIData(): Promise<Array<{ date: string; value: number }>> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-    const response = await fetch(`${apiUrl}/api/final/masi_weekly_mean`)
+    const response = await fetch(`/api/final/masi_weekly_mean`)
     if (!response.ok) throw new Error(`API error: ${response.status}`)
     const data = await response.json()
     // Convert ISO date strings to dd/mm format for consistency

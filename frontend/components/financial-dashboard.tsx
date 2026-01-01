@@ -47,7 +47,7 @@ export function FinancialDashboard() {
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL!
-    const resp = await fetch(`${apiUrl}/api/volatility/run-modelling`, {
+    const resp = await fetch(`/api/volatility/run-modelling`, {
       method: "POST",
     })
 
