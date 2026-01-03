@@ -9,7 +9,7 @@ services:
     expose:
       - "8000"
     volumes:
-      - E:/MesProjets/backend/data:/app/data  # chemin absolu Windows vers le dossier data
+      - ./backend/data:/app/data # chemin absolu Windows vers le dossier data
 
   frontend:
     build: ./frontend
@@ -31,3 +31,4 @@ services:
     depends_on:
       - frontend
       - backend
+
