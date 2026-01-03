@@ -8,7 +8,7 @@
 - [Architecture globale du projet](#architecture-globale-du-projet)
 - [Résultats](#Résultats)
 - [Quelques définitions](#Quelques-définitions)
-- [Comment lancer l'application](#comment-lancer-l-'-application)
+- [Comment lancer l'application](#comment-lancer-lapplication)
 
 
 ## **Video demo**
