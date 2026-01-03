@@ -8,6 +8,7 @@
 - [Architecture globale du projet](#architecture-globale-du-projet)
 - [Résultats](#Résultats)
 - [Quelques définitions](#Quelques-définitions)
+- [Comment lancer l'application](#comment-lancer-l-application)
 
 
 ## **Video demo**
@@ -206,9 +207,28 @@ Les résultats montrent que le modèle de forecast dynamique **surpasse largemen
 - **Risque de volatilité**: Le risque de volatilité correspond à la **grande variation des prix d’un actif ou d’un portefeuille sur une période donnée.** Une forte volatilité augmente l’incertitude sur le rendement futur.
 
 
-
 Ces indicateurs montrent que le modèle prédit **plus précisément la volatilité future** et capture mieux la variation des données, contrairement au GARCH dont les prédictions sont moins fiables et moins adaptées à ce dataset.
 
 
+## **Comment lancer l'application**
 
+Exécuter séquentiellement ces commandes en ligne de commande:  
+
+```bash
+git clone https://github.com/202422/Mesure-et-gestion-du-risque-des-portefeuilles-OPCVM-l-aide-de-la-Data-Science.git
+cd Mesure-et-gestion-du-risque-des-portefeuilles-OPCVM-l-aide-de-la-Data-Science
+docker compose up --build -d
+```
+
+
+Ces commandes permettent de:
+
+
+* Télécharger (clone) **tout le projet** depuis GitHub sur votre PC.
+* Créer un **dossier local** nommé `Mesure-et-gestion-du-risque-des-portefeuilles-OPCVM-l-aide-de-la-Data-Science` avec tous les fichiers du repo.
+* `cd` = “change directory” → change le dossier courant dans le terminal.
+* Entrer dans le dossier **du projet cloné** pour pouvoir exécuter des commandes à l’intérieur.
+* Construire les images depuis les Dockerfile
+* Lancer les conteneurs **en arrière-plan** (mode détaché), donc le terminal reste libre.
+* Faire tourner l'application complète **FastAPI + Next.js + Nginx** sur votre PC
 
