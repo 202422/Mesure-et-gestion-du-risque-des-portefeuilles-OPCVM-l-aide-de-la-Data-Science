@@ -30,7 +30,7 @@ Ce projet représente une opportunité concrète de **moderniser la gestion du r
 
 ## A. Principe général
 
-Dans le cadre de ce projet, nous avons développé une approche data-driven visant à estimer et prévoir la volatilité à deux semaines de l’OPCVM *Attijari Diversifié*, en combinant des méthodes économétriques classiques (GARCH) et des modèles avancés d’apprentissage automatique.
+Dans le cadre de ce projet, j'ai développé une approche data-driven visant à estimer et prévoir la volatilité à deux semaines de l’OPCVM *Attijari Diversifié*, en combinant des méthodes économétriques classiques (GARCH) et des modèles avancés d’apprentissage automatique.
 
 Contrairement aux approches traditionnelles reposant sur un entraînement statique, nous avons mis en place un **système de prévision dynamique avec ré-entraînement automatique**, reproduisant fidèlement les conditions réelles de marché.
 
